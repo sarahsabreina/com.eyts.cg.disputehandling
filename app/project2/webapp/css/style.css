@@ -1,0 +1,73 @@
+/* Enter your custom styles here */
+
+/* ================================
+   TABLE: stable row height + ellipsis
+   ================================ */
+.casesTable .sapMListTblRow {
+  height: 4.75rem; /* adjust: 4.25rem (compact) or 5rem (spacious) */
+}
+
+.casesTable .sapMListTblCell {
+  vertical-align: middle;
+}
+
+/* Prevent long text from expanding row height */
+.casesTable .sapMText,
+.casesTable .sapMObjectIdentifierTitle,
+.casesTable .sapMObjectIdentifierText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Optional: reduce internal spacing a bit (more compact) */
+.casesTable .sapMListTblCell .sapMVBox > div {
+  margin-top: 0 !important;
+}
+/* ----- TABLE: Stop random row heights ----- */
+.casesTable .sapMListTblRow {
+  height: 4.5rem;           /* adjust: 4rem (compact) or 5rem (roomy) */
+}
+
+.casesTable .sapMListTblCell {
+  vertical-align: middle;
+}
+
+/* Make texts never wrap (prevents row expanding) */
+.noWrapText,
+.casesTable .sapMText,
+.casesTable .sapMObjectIdentifierTitle,
+.casesTable .sapMObjectIdentifierText {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Make the small second line look consistent */
+.cellVBox .subText {
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+/* Tighten VBox inside table cells */
+.cellVBox {
+  gap: 0.1rem;
+}
+
+/* ----- KANBAN board look ----- */
+.kanbanBoard {
+  align-items: flex-start;
+}
+
+.kanbanColumn {
+  width: 20rem;
+  min-width: 20rem;
+}
+
+.kanbanCard {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  margin: 0.5rem 0;
+}

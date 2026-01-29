@@ -1,0 +1,354 @@
+<mvc:View
+    controllerName="project2.controller.View3"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.f"
+    xmlns:form="sap.ui.layout.form"
+    displayBlock="true"
+    height="100%">
+
+    <f:DynamicPage
+        id="caseDetailPage"
+        toggleHeaderOnTitleClick="false"
+        showFooter="true">
+
+        <!-- PAGE TITLE -->
+        <f:title>
+            <f:DynamicPageTitle id="_IDGenDynamicPageTitle1">
+                <f:heading>
+                    <HBox id="_IDGenHBox10" alignItems="Center">
+                        <Button id="_IDGenButton2"
+                            icon="sap-icon://nav-back"
+                            type="Transparent"
+                            press="onNavBack"
+                            class="sapUiTinyMarginEnd"/>
+                        <Title id="_IDGenTitle5" text="Case {/caseID}" level="H2"/>
+                        <ObjectStatus id="_IDGenObjectStatus3"
+                            text="{/status}"
+                            state="{ path: '/status', formatter: '.formatter.statusState' }"
+                            class="sapUiSmallMarginBegin"/>
+                    </HBox>
+                </f:heading>
+
+                <f:snappedContent>
+                    <ObjectAttribute id="_IDGenObjectAttribute" title="Priority" text="{/priority}"/>
+                    <ObjectAttribute id="_IDGenObjectAttribute1" title="SLA" text="{/slaRemainingHours}h left"/>
+                </f:snappedContent>
+
+                <f:actions>
+                    <Button id="_IDGenButton3"
+                        text="Assign to Me"
+                        type="Emphasized"
+                        press="onAssignToMe"
+                        visible="{ path: '/assignee/ID', formatter: '.formatter.isNotAssignedToMe' }"/>
+                    
+                    <Button id="_IDGenButton4"
+                        text="Request Info"
+                        press="onRequestInfo"
+                        enabled="{= ${/status} !== 'CLOSED' }"/>
+                    
+                    <Button id="_IDGenButton5"
+                        text="Resolve"
+                        type="Accept"
+                        press="onResolve"
+                        enabled="{= ${/status} === 'IN_REVIEW' }"/>
+                    
+                    <Button id="_IDGenButton6"
+                        text="Reject"
+                        type="Reject"
+                        press="onReject"
+                        enabled="{= ${/status} !== 'CLOSED' }"/>
+                </f:actions>
+            </f:DynamicPageTitle>
+        </f:title>
+
+        <!-- PAGE HEADER -->
+        <f:header>
+            <f:DynamicPageHeader id="_IDGenDynamicPageHeader" pinnable="true">
+                <VBox id="_IDGenVBox13">
+                    <!-- Key Information Cards -->
+                    <HBox id="_IDGenHBox11" class="sapUiSmallMarginBottom">
+                        <VBox id="_IDGenVBox14" class="sapUiMediumMarginEnd">
+                            <Label id="_IDGenLabel6" text="Impact Amount"/>
+                            <ObjectNumber id="_IDGenObjectNumber9"
+                                number="{
+                                    path: '/impactAmount',
+                                    type: 'sap.ui.model.type.Currency',
+                                    formatOptions: { showMeasure: false }
+                                }"
+                                unit="MYR"
+                                emphasized="true"
+                                state="Error"
+                                class="sapUiTinyMarginTop"/>
+                        </VBox>
+
+                        <VBox id="_IDGenVBox15" class="sapUiMediumMarginEnd">
+                            <Label id="_IDGenLabel7" text="Variance"/>
+                            <ObjectNumber id="_IDGenObjectNumber10"
+                                number="{
+                                    path: '/impactVariance',
+                                    type: 'sap.ui.model.type.Currency',
+                                    formatOptions: { showMeasure: false }
+                                }"
+                                unit="MYR"
+                                emphasized="true"
+                                class="sapUiTinyMarginTop"/>
+                        </VBox>
+
+                        <VBox id="_IDGenVBox16" class="sapUiMediumMarginEnd">
+                            <Label id="_IDGenLabel8" text="Category"/>
+                            <Text id="_IDGenText35" text="{/category}" class="sapUiTinyMarginTop"/>
+                            <Text id="_IDGenText36"
+                                text="{ path: '/isRecurring', formatter: '.formatter.formatRecurring' }"
+                                class="sapUiTinyMarginTop"/>
+                        </VBox>
+
+                        <VBox id="_IDGenVBox17">
+                            <Label id="_IDGenLabel9" text="SLA Status"/>
+                            <HBox id="_IDGenHBox12" alignItems="Center" class="sapUiTinyMarginTop">
+                                <ObjectStatus id="_IDGenObjectStatus4"
+                                    text="{/slaRemainingHours}h left"
+                                    state="{ path: '/slaStatus', formatter: '.formatter.slaState' }"
+                                    class="sapUiTinyMarginEnd"/>
+                                <ProgressIndicator id="_IDGenProgressIndicator1"
+                                    width="120px"
+                                    percentValue="{ path: '/slaRemainingHours', formatter: '.formatter.slaPercentage' }"
+                                    displayValue=""
+                                    state="{ path: '/slaStatus', formatter: '.formatter.slaState' }"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Timeline Info -->
+                    <HBox id="_IDGenHBox13" class="sapUiSmallMarginBottom">
+                        <VBox id="_IDGenVBox18" class="sapUiMediumMarginEnd">
+                            <Label id="_IDGenLabel10" text="Created"/>
+                            <Text id="_IDGenText37" text="{ path: '/createdAt', formatter: '.formatter.formatDateTime' }" class="sapUiTinyMarginTop"/>
+                            <Text id="_IDGenText38" text="by {/submitter/firstName} {/submitter/lastName}" class="sapUiTinyMarginTop"/>
+                        </VBox>
+
+                        <VBox id="_IDGenVBox19" class="sapUiMediumMarginEnd">
+                            <Label id="_IDGenLabel11" text="Last Modified"/>
+                            <Text id="_IDGenText39" text="{ path: '/modifiedAt', formatter: '.formatter.formatDateTime' }" class="sapUiTinyMarginTop"/>
+                            <Text id="_IDGenText40" text="by {/modifiedBy/firstName} {/modifiedBy/lastName}" class="sapUiTinyMarginTop"/>
+                        </VBox>
+
+                        <VBox id="_IDGenVBox20">
+                            <Label id="_IDGenLabel12" text="Assigned To"/>
+                            <Text id="_IDGenText41" text="{/assignee/firstName} {/assignee/lastName}" class="sapUiTinyMarginTop"/>
+                            <Text id="_IDGenText42" text="{/assignee/workload} active cases" class="sapUiTinyMarginTop"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </f:DynamicPageHeader>
+        </f:header>
+
+        <!-- PAGE CONTENT -->
+        <f:content>
+            <IconTabBar
+                id="detailTabs"
+                class="sapUiNoContentPadding"
+                expandable="false">
+
+                <items>
+                    <!-- OVERVIEW TAB -->
+                    <IconTabFilter id="_IDGenIconTabFilter4" text="Overview" icon="sap-icon://overview-chart">
+                        <VBox id="_IDGenVBox21" class="sapUiSmallMargin">
+                            
+                            <!-- Discrepancy Details -->
+                            <Panel id="_IDGenPanel" headerText="Discrepancy Details" class="sapUiSmallMarginBottom">
+                                <form:SimpleForm id="_IDGenSimpleForm"
+                                    editable="false"
+                                    layout="ResponsiveGridLayout"
+                                    labelSpanXL="3"
+                                    labelSpanL="3"
+                                    labelSpanM="3"
+                                    emptySpanXL="0"
+                                    emptySpanL="0"
+                                    emptySpanM="0"
+                                    columnsXL="2"
+                                    columnsL="2"
+                                    columnsM="1">
+                                    
+                                    <form:content>
+                                        <Label id="_IDGenLabel13" text="Discrepancy ID"/>
+                                        <Text id="_IDGenText43" text="{/discrepancy/discrepancyID}"/>
+
+                                        <Label id="_IDGenLabel14" text="Type"/>
+                                        <Text id="_IDGenText44" text="{/discrepancy/type}"/>
+
+                                        <Label id="_IDGenLabel15" text="Source System"/>
+                                        <Text id="_IDGenText45" text="{/discrepancy/sourceSystem}"/>
+
+                                        <Label id="_IDGenLabel16" text="Transaction Date"/>
+                                        <Text id="_IDGenText46" text="{ path: '/discrepancy/transactionDate', formatter: '.formatter.formatDate' }"/>
+
+                                        <Label id="_IDGenLabel17" text="Document Number"/>
+                                        <Text id="_IDGenText47" text="{/discrepancy/documentNumber}"/>
+
+                                        <Label id="_IDGenLabel18" text="Reference Number"/>
+                                        <Text id="_IDGenText48" text="{/discrepancy/referenceNumber}"/>
+
+                                        <Label id="_IDGenLabel19" text="GL Account"/>
+                                        <Text id="_IDGenText49" text="{/discrepancy/glAccount}"/>
+
+                                        <Label id="_IDGenLabel20" text="Cost Center"/>
+                                        <Text id="_IDGenText50" text="{/discrepancy/costCenter}"/>
+
+                                        <Label id="_IDGenLabel21" text="Expected Amount"/>
+                                        <ObjectNumber id="_IDGenObjectNumber11"
+                                            number="{
+                                                path: '/discrepancy/expectedAmount',
+                                                type: 'sap.ui.model.type.Currency',
+                                                formatOptions: { showMeasure: false }
+                                            }"
+                                            unit="MYR"/>
+
+                                        <Label id="_IDGenLabel22" text="Actual Amount"/>
+                                        <ObjectNumber id="_IDGenObjectNumber12"
+                                            number="{
+                                                path: '/discrepancy/actualAmount',
+                                                type: 'sap.ui.model.type.Currency',
+                                                formatOptions: { showMeasure: false }
+                                            }"
+                                            unit="MYR"/>
+
+                                        <Label id="_IDGenLabel23" text="Description"/>
+                                        <Text id="_IDGenText51" text="{/discrepancy/description}"/>
+                                    </form:content>
+                                </form:SimpleForm>
+                            </Panel>
+
+                            <!-- Current Solution -->
+                            <Panel id="_IDGenPanel1"
+                                headerText="Proposed Solution"
+                                visible="{= ${/solution} !== null }"
+                                class="sapUiSmallMarginBottom">
+                                <VBox id="_IDGenVBox22" class="sapUiSmallMargin">
+                                    <HBox id="_IDGenHBox14" justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                                        <VBox id="_IDGenVBox23">
+                                            <Label id="_IDGenLabel24" text="Solution Type"/>
+                                            <Text id="_IDGenText52" text="{/solution/type}" class="sapUiTinyMarginTop"/>
+                                        </VBox>
+                                        <VBox id="_IDGenVBox24">
+                                            <Label id="_IDGenLabel25" text="Estimated Resolution Time"/>
+                                            <Text id="_IDGenText53" text="{/solution/estimatedTime}" class="sapUiTinyMarginTop"/>
+                                        </VBox>
+                                        <VBox id="_IDGenVBox25">
+                                            <Label id="_IDGenLabel26" text="Approval Required"/>
+                                            <Text id="_IDGenText54"
+                                                text="{ path: '/solution/approvalRequired', formatter: '.formatter.formatBoolean' }"
+                                                class="sapUiTinyMarginTop"/>
+                                        </VBox>
+                                    </HBox>
+
+                                    <Label id="_IDGenLabel27" text="Description"/>
+                                    <Text id="_IDGenText55" text="{/solution/description}" class="sapUiSmallMarginTop sapUiSmallMarginBottom"/>
+
+                                    <Label id="_IDGenLabel28" text="Proposed Action Steps"/>
+                                    <List id="_IDGenList4"
+                                        items="{/solution/steps}"
+                                        class="sapUiSmallMarginTop">
+                                        <StandardListItem id="_IDGenStandardListItem"
+                                            title="{step}"
+                                            icon="sap-icon://step"
+                                            iconInset="false"/>
+                                    </List>
+
+                                    <HBox id="_IDGenHBox15" class="sapUiSmallMarginTop">
+                                        <Label id="_IDGenLabel29" text="Impact:" class="sapUiTinyMarginEnd"/>
+                                        <Text id="_IDGenText56" text="{/solution/impact}"/>
+                                    </HBox>
+                                </VBox>
+                            </Panel>
+
+                            <!-- Root Cause Analysis -->
+                            <Panel id="_IDGenPanel2"
+                                headerText="Root Cause Analysis"
+                                visible="{= ${/rootCause} !== null }">
+                                <VBox id="_IDGenVBox26" class="sapUiSmallMargin">
+                                    <Label id="_IDGenLabel30" text="Primary Cause"/>
+                                    <Text id="_IDGenText57" text="{/rootCause/primary}" class="sapUiTinyMarginTop sapUiSmallMarginBottom"/>
+
+                                    <Label id="_IDGenLabel31" text="Contributing Factors"/>
+                                    <List id="_IDGenList5"
+                                        items="{/rootCause/factors}"
+                                        class="sapUiSmallMarginTop sapUiSmallMarginBottom">
+                                        <StandardListItem id="_IDGenStandardListItem1"
+                                            title="{factor}"
+                                            icon="sap-icon://alert"
+                                            iconInset="false"/>
+                                    </List>
+
+                                    <Label id="_IDGenLabel32" text="Prevention Measures"/>
+                                    <Text id="_IDGenText58" text="{/rootCause/prevention}" class="sapUiTinyMarginTop"/>
+                                </VBox>
+                            </Panel>
+
+                        </VBox>
+                    </IconTabFilter>
+
+                    <!-- ACTIVITY TAB -->
+                    <IconTabFilter id="_IDGenIconTabFilter5" text="Activity" icon="sap-icon://history" iconColor="Critical">
+                        <List id="_IDGenList6"
+                            items="{/activities}"
+                            noDataText="No activity yet"
+                            class="sapUiSmallMargin">
+                            <FeedListItem id="_IDGenFeedListItem"
+                                sender="{actor}"
+                                icon="sap-icon://person-placeholder"
+                                info="{action}"
+                                timestamp="{ path: 'timestamp', formatter: '.formatter.formatRelativeDate' }"
+                                text="{comment}"/>
+                        </List>
+                    </IconTabFilter>
+
+                    <!-- ATTACHMENTS TAB -->
+                    <IconTabFilter id="_IDGenIconTabFilter6" text="Attachments" icon="sap-icon://attachment" iconColor="Positive">
+                        <UploadCollection id="_IDGenUploadCollection"
+                            items="{/attachments}"
+                            uploadEnabled="true"
+                            uploadButtonInvisible="false"
+                            class="sapUiSmallMargin">
+                            <items>
+                                <UploadCollectionItem id="_IDGenUploadCollectionItem"
+                                    fileName="{fileName}"
+                                    mimeType="{mimeType}"
+                                    url="{url}"
+                                    uploadedDate="{uploadedDate}"
+                                    enableEdit="false"
+                                    enableDelete="true"
+                                    visibleEdit="false"
+                                    visibleDelete="true"/>
+                            </items>
+                        </UploadCollection>
+                    </IconTabFilter>
+
+                    <!-- COMMENTS TAB iconColor="Information"-->
+                    <IconTabFilter id="_IDGenIconTabFilter7" text="Comments" icon="sap-icon://comment" >
+                        <VBox id="_IDGenVBox27" class="sapUiSmallMargin">
+                            <FeedInput id="_IDGenFeedInput"
+                                placeholder="Add a comment..."
+                                post="onPostComment"
+                                class="sapUiSmallMarginBottom"/>
+                            
+                            <List id="_IDGenList7"
+                                items="{/comments}"
+                                noDataText="No comments yet">
+                                <FeedListItem id="_IDGenFeedListItem1"
+                                    sender="{author}"
+                                    icon="sap-icon://person-placeholder"
+                                    timestamp="{ path: 'timestamp', formatter: '.formatter.formatRelativeDate' }"
+                                    text="{text}"/>
+                            </List>
+                        </VBox>
+                    </IconTabFilter>
+
+                </items>
+            </IconTabBar>
+        </f:content>
+
+    </f:DynamicPage>
+</mvc:View>
