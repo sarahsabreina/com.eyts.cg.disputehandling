@@ -813,13 +813,7 @@ onShowActions: function(oEvent) {
 },
 
 // ==================== ACTION SHEET HANDLERS ====================
-/*
-_onViewDetails: function(oCaseData) {
-    localStorage.setItem("selectedCaseID", oCaseData.caseID);
-    MessageToast.show("Opening case: " + oCaseData.caseID);
-    window.open("View3.html", "_blank");
-},
-*/
+
 _onViewDetails: function(oCaseData) {
     localStorage.setItem("selectedCaseID", oCaseData.caseID);
     localStorage.setItem("selectedCaseData", JSON.stringify(oCaseData));
