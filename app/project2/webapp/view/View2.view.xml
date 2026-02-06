@@ -251,7 +251,6 @@
                         }"
                         mode="MultiSelect"
                         selectionChange="onSelectionChange"
-                        itemPress="onCasePress"
                         growing="true"
                         growingScrollToLoad="true"
                         sticky="ColumnHeaders"

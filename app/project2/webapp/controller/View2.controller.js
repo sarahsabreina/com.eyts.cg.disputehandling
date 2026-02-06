@@ -727,30 +727,15 @@ sap.ui.define([
         // ADD THIS TO YOUR EXISTING View2 controller.js FILE
 
 /**
- * Case press handler - Navigate to detail view
+ * Case press handler - Now disabled, use Actions menu instead
  */
-
 onCasePress: function (oEvent) {
-    // Works for Table itemPress and ColumnListItem press
-    const oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-    const oContext = oItem.getBindingContext();
-    if (!oContext) {
-        MessageToast.show("No binding context found");
-        return;
-    }
-
-    const sCaseID = oContext.getProperty("caseID");
-
-    // Optional: store case data if you want
-    localStorage.setItem("selectedCaseID", sCaseID);
-    localStorage.setItem("selectedCaseData", JSON.stringify(oContext.getObject()));
-
-    // Navigate using UI5 router
-    this.getOwnerComponent().getRouter().navTo("caseDetail", {
-        caseId: sCaseID
-    });
+    // Optional: Show a message to guide users
+    MessageToast.show("Use the Actions menu (⋮) to view case details");
+    
+    // Or completely disable by doing nothing:
+    // return;
 },
-
 
 /**
  * Actions menu - Show action sheet with multiple options
@@ -758,74 +743,94 @@ onCasePress: function (oEvent) {
 onShowActions: function(oEvent) {
     const oButton = oEvent.getSource();
     const oContext = oButton.getBindingContext();
-    const oCaseData = oContext.getObject();
-
-    // Create action sheet if not exists
-    if (!this._actionSheet) {
-        this._actionSheet = new sap.m.ActionSheet({
-            title: "Case Actions",
-            showCancelButton: true,
-            buttons: [
-                new sap.m.Button({
-                    text: "View Details",
-                    icon: "sap-icon://detail-view",
-                    press: () => this._onViewDetails(oCaseData)
-                }),
-                new sap.m.Button({
-                    text: "Assign to Me",
-                    icon: "sap-icon://person-placeholder",
-                    press: () => this._onQuickAssign(oCaseData)
-                }),
-                new sap.m.Button({
-                    text: "Change Priority",
-                    icon: "sap-icon://flag",
-                    press: () => this._onChangePriority(oCaseData)
-                }),
-                new sap.m.Button({
-                    text: "Add Comment",
-                    icon: "sap-icon://comment",
-                    press: () => this._onQuickComment(oCaseData)
-                }),
-                new sap.m.Button({
-                    text: "Request Info",
-                    icon: "sap-icon://email",
-                    press: () => this._onQuickRequestInfo(oCaseData)
-                }),
-                new sap.m.Button({
-                    text: "Mark as Resolved",
-                    icon: "sap-icon://accept",
-                    type: "Accept",
-                    press: () => this._onQuickResolve(oCaseData)
-                }),
-                new sap.m.Button({
-                    text: "Reject Case",
-                    icon: "sap-icon://decline",
-                    type: "Reject",
-                    press: () => this._onQuickReject(oCaseData)
-                }),
-                new sap.m.Button({
-                    text: "View History",
-                    icon: "sap-icon://history",
-                    press: () => this._onViewHistory(oCaseData)
-                }),
-                new sap.m.Button({
-                    text: "Download Report",
-                    icon: "sap-icon://download",
-                    press: () => this._onDownloadReport(oCaseData)
-                })
-            ]
-        });
+    
+    if (!oContext) {
+        MessageToast.show("No case data available");
+        return;
     }
+    
+    const oCaseData = oContext.getObject();
+    
+    // ALWAYS destroy and recreate the action sheet to ensure fresh data
+    if (this._actionSheet) {
+        this._actionSheet.destroy();
+        this._actionSheet = null;
+    }
+
+    // Create NEW action sheet with current case data
+    this._actionSheet = new sap.m.ActionSheet({
+        title: "Case Actions - " + oCaseData.caseID,
+        showCancelButton: true,
+        buttons: [
+            new sap.m.Button({
+                text: "View Details",
+                icon: "sap-icon://detail-view",
+                press: () => this._onViewDetails(oCaseData)
+            }),
+            new sap.m.Button({
+                text: "Assign to Me",
+                icon: "sap-icon://person-placeholder",
+                press: () => this._onQuickAssign(oCaseData)
+            }),
+            new sap.m.Button({
+                text: "Change Priority",
+                icon: "sap-icon://flag",
+                press: () => this._onChangePriority(oCaseData)
+            }),
+            new sap.m.Button({
+                text: "Request Info",
+                icon: "sap-icon://email",
+                press: () => this._onQuickRequestInfo(oCaseData)
+            }),
+            new sap.m.Button({
+                text: "Mark as Resolved",
+                icon: "sap-icon://accept",
+                type: "Accept",
+                press: () => this._onQuickResolve(oCaseData)
+            }),
+            new sap.m.Button({
+                text: "Reject Case",
+                icon: "sap-icon://decline",
+                type: "Reject",
+                press: () => this._onQuickReject(oCaseData)
+            }),
+            new sap.m.Button({
+                text: "Download Report",
+                icon: "sap-icon://download",
+                press: () => this._onDownloadReport(oCaseData)
+            })
+        ],
+        afterClose: () => {
+            // Clean up after closing
+            if (this._actionSheet) {
+                this._actionSheet.destroy();
+                this._actionSheet = null;
+            }
+        }
+    });
 
     this._actionSheet.openBy(oButton);
 },
 
 // ==================== ACTION SHEET HANDLERS ====================
-
+/*
 _onViewDetails: function(oCaseData) {
     localStorage.setItem("selectedCaseID", oCaseData.caseID);
     MessageToast.show("Opening case: " + oCaseData.caseID);
     window.open("View3.html", "_blank");
+},
+*/
+_onViewDetails: function(oCaseData) {
+    localStorage.setItem("selectedCaseID", oCaseData.caseID);
+    localStorage.setItem("selectedCaseData", JSON.stringify(oCaseData));
+    
+    // Navigate using UI5 router
+    this.getOwnerComponent().getRouter().navTo("caseDetail", {
+        caseId: oCaseData.caseID
+    });
+    
+    MessageToast.show("Opening case details: " + oCaseData.caseID);
+    
 },
 
 _onQuickAssign: function(oCaseData) {
@@ -915,12 +920,7 @@ _onChangePriority: function(oCaseData) {
     this._priorityDialog.open();
 },
 
-_onQuickComment: function(oCaseData) {
-    MessageBox.information(
-        `Quick comment feature for case ${oCaseData.caseID}.\nOpen full details view to add comments.`,
-        { title: "Add Comment" }
-    );
-},
+
 
 _onQuickRequestInfo: function(oCaseData) {
     MessageBox.confirm(
